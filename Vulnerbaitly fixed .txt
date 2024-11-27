@@ -1,0 +1,5 @@
+login with  any passowrds -> Backend ->server->handlers->auth->login.go(Login function)
+admin delete admins -> Backend ->server->handlers->admin->user.go(delete function)
+
+
+
