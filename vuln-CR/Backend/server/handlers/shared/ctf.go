@@ -18,25 +18,50 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
+//resolving the problem by cleaning the file path at the end before checking on it 
+
 func DownloadAttachment(c echo.Context) error {
-	name := c.QueryParam("filename")
-	challenge := c.QueryParam("challenge")
+    name := c.QueryParam("filename")
+    challenge := c.QueryParam("challenge")
 
-	name = filepath.Base(name)
-	challenge = filepath.Base(challenge)
+    // Sanitize inputs by using filepath.Base() to extract only the filename
+    // This ensures no path information is included in the filename
+    name = filepath.Base(name)
+    challenge = filepath.Base(challenge)
 
-	filePath := filepath.Join("CyberRange", "CTF", challenge, name)
+    // Clean and sanitize the file path to avoid directory traversal attacks
+    filePath := filepath.Join("CyberRange", "CTF", challenge, name)
 
-	if _, err := os.Stat(filePath); os.IsNotExist(err) {
-		return c.JSON(404, map[string]string{"error": "File not found"})
-	}
+    // Use filepath.Clean to normalize the file path
+    filePath = filepath.Clean(filePath)
 
-	return c.File(filePath)
+    // Ensure the file is within the intended directory
+    // Prevent the user from accessing files outside the "CyberRange/CTF" directory
+    if !strings.HasPrefix(filePath, filepath.Join("CyberRange", "CTF")) {
+        return c.JSON(400, map[string]string{"error": "Invalid file path"})
+    }
+
+    // Check if the file exists
+    if _, err := os.Stat(filePath); os.IsNotExist(err) {
+        return c.JSON(404, map[string]string{"error": "File not found"})
+    }
+
+    // Return the file
+    return c.File(filePath)
 }
+
+//solved the problem of the challenge by clening the user input 
 
 func DownloadAll(c echo.Context) error {
 	challenge := c.QueryParam("challenge")
-	challengeDir := filepath.Join("CyberRange", "CTF", challenge)
+	// Sanitize input: only allow the directory name (no path traversal)
+    challenge = filepath.Base(challenge)
+
+    // Build the absolute path to the challenge directory
+    challengeDir := filepath.Join("CyberRange", "CTF", challenge)
+
+    // Clean and normalize the path
+    challengeDir = filepath.Clean(challengeDir)
 
 	if _, err := os.Stat(challengeDir); os.IsNotExist(err) {
 		return c.JSON(404, map[string]string{"error": "Folder not found"})
