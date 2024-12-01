@@ -2,3 +2,5 @@ Login with  any passowrds -> Backend ->server->handlers->auth->login.go(Login fu
 Admin delete admins -> Backend ->server->handlers->admin->user.go(delete function)
 Directory traversal at Download attachment Backend ->server->handlers->shared->ctf.go
 Directory traversal at Download ALL Backend ->server->handlers->shared->ctf.go
+XSS in the feedback -> Backend ->server->handlers->admin->users.go(getfeedback function function)
+XSS in the feedback -> Frontend->server->app->pages->feedback.vue(getfeedback function function not sure if neccssary)

@@ -6,7 +6,8 @@ import (
 	"cyberrange/utils"
 	"fmt"
 	"strings"
-
+	"html"
+	"github.com/microcosm-cc/bluemonday"
 	"github.com/labstack/echo/v4"
 )
 
@@ -118,6 +119,8 @@ func DeleteUser(c echo.Context) error {
 	return c.JSON(200, map[string]string{"message": "User is deleted"})
 }
 
+//sanitized the feedback from any thing that can be used as xss 
+
 func GetFeedbacks(c echo.Context) error {
 	token := c.Request().Header.Get("Authorization")
 
@@ -143,6 +146,11 @@ func GetFeedbacks(c echo.Context) error {
 			fmt.Println(err)
 			return c.JSON(500, map[string]string{"error": "Failed to get feedbacks"})
 		}
+		// Sanitize the feedback content to prevent XSS attacks
+		feedback.Feedback = html.EscapeString(feedback.Feedback)
+		// Then use Bluemonday to sanitize the feedback content to remove any potentially harmful JavaScript
+		feedback.Feedback = sanitizer.Sanitize(feedback.Feedback)
+		// Add the sanitized feedback to the feedbacks slice
 		feedbacks = append(feedbacks, feedback)
 	}
 
