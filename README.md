@@ -1,26 +1,33 @@
-CyberRange
-We spotted and solved the 10 Vulnerabilities on the website.
+# CyberRange Vulnerability Lab
 
-Vulnerabilities Covered
-This cyber range covers the following vulnerabilities:
+This CyberRange simulates a vulnerable web application where 10 common security vulnerabilities have been identified and mitigated. It serves as a hands-on environment for learning about web application security and understanding how to exploit and patch real-world vulnerabilities.
 
-Cross-Site Scripting (XSS): Found in feedback and username fields.
-Improper Authorization: Admin users could delete other admin users.
-Directory Traversal: Vulnerabilities in downloading attachments and all files.
-Insecure Password Practices: Weak enforcement of password strength.
-OTP Bypass: Due to predictable OTP length.
-Identity Spoofing: Changing a user's name to another existing user's name.
-Multiple Submissions: Ability to submit a lab more than once.
-Game Logic Flaw: Ability to add challenges with negative scores.
-Getting Started
-Prerequisites
-Go (Tested with Go 1.x)
-Node.js and npm (or your preferred node package manager such as pnpm, yarn, or bun)
-Backend Setup
-• Navigate to the frontend directory • Run the following command: go run .
+## 🛡️ Vulnerabilities Covered
 
-Backend Setup
-• Navigate to the frontend directory • Run the following command: npm install • Then run the following command: npm run dev • Now the frontend should be running and accessible through port 3000.
+The lab covers the following vulnerabilities:
 
-Contributors
-Freddy Amgad - Shahed Elmahlawy
+- **Cross-Site Scripting (XSS)**: Found in feedback and username fields.
+- **Improper Authorization**: Admin users were able to delete other admins.
+- **Directory Traversal**: Exploitable through file and attachment downloads.
+- **Insecure Password Practices**: Weak password strength enforcement.
+- **OTP Bypass**: Exploitable due to predictable OTP length.
+- **Identity Spoofing**: Users could impersonate others by changing their display name.
+- **Multiple Submissions**: Labs could be submitted more than once.
+- **Game Logic Flaw**: Challenges could be submitted with negative scores.
+
+## 🚀 Getting Started
+
+### Prerequisites
+
+Make sure you have the following installed:
+
+- **Go** (tested with Go 1.x)
+- **Node.js** and **npm** (or alternatives like `pnpm`, `yarn`, or `bun`)
+
+### Backend Setup
+
+1. Navigate to the `backend` directory.
+2. Run the backend server:
+
+```bash
+go run .
