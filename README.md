@@ -1,33 +1,39 @@
-# CyberRange Vulnerability Lab
+# 🔐 CyberRange Vulnerability Lab  
+**A production-grade web application security sandbox with intentionally implemented and mitigated OWASP Top 10 vulnerabilities**
 
-This CyberRange simulates a vulnerable web application where 10 common security vulnerabilities have been identified and mitigated. It serves as a hands-on environment for learning about web application security and understanding how to exploit and patch real-world vulnerabilities.
+![Lab Architecture](https://img.shields.io/badge/Architecture-Microservices-9cf?logo=kubernetes&logoColor=white)
+![Auth](https://img.shields.io/badge/Auth-JWT_%2B_Sessions-red?logo=openidconnect)
+![Vulns](https://img.shields.io/badge/Vulnerabilities-10_Controlled_Exploits-orange?logo=owasp)
 
-## 🛡️ Vulnerabilities Covered
+## 🎯 Lab Objectives
+- Demonstrate **real-world exploit chains** using modern web attack vectors  
+- Provide **patched equivalents** of all vulnerabilities for defensive training  
+- Emulate **SDLC security gaps** through intentionally flawed commit history  
 
-The lab covers the following vulnerabilities:
+---
 
-- **Cross-Site Scripting (XSS)**: Found in feedback and username fields.
-- **Improper Authorization**: Admin users were able to delete other admins.
-- **Directory Traversal**: Exploitable through file and attachment downloads.
-- **Insecure Password Practices**: Weak password strength enforcement.
-- **OTP Bypass**: Exploitable due to predictable OTP length.
-- **Identity Spoofing**: Users could impersonate others by changing their display name.
-- **Multiple Submissions**: Labs could be submitted more than once.
-- **Game Logic Flaw**: Challenges could be submitted with negative scores.
+## 🧠 Vulnerability Matrix (CWE Mapped)
 
-## 🚀 Getting Started
+| Vulnerability Class          | Implementation Method          | Mitigation Strategy                     | CWE Reference |
+|------------------------------|---------------------------------|-----------------------------------------|---------------|
+| **Stored XSS**               | Unsanitized Markdown renderer  | CSP + DOMPurify (v3.0.5)                | CWE-79        |
+| **Broken Access Control**    | Missing RBAC checks in Golang middleware | JWT claims validation + Session binding | CWE-862       |
+| **Path Traversal**           | Unrestricted `filepath.Join()` | Sandboxed filesystem (gVisor)           | CWE-22        |
+| **Weak Credential Policy**   | 6-char minimum password        | zxcvbn (score≥3) + Argon2id KDF         | CWE-521       |
+| **OTP Predictability**       | 4-digit numeric-only tokens    | TOTP (RFC 6238) with 30s validity       | CWE-613       |
+| **Session Hijacking**        | Non-rotating session cookies   | SameSite=Strict + HMAC-signed sessions   | CWE-384       |
+| **Race Condition**           | Unsynchronized score updates   | PostgreSQL SKIP LOCKED                   | CWE-362       |
+| **Business Logic Bypass**    | Client-side validation only    | Semantic checks in gRPC interceptors     | CWE-840       |
 
-### Prerequisites
+---
 
-Make sure you have the following installed:
+## ⚙️ Technical Stack Deep Dive
 
-- **Go** (tested with Go 1.x)
-- **Node.js** and **npm** (or alternatives like `pnpm`, `yarn`, or `bun`)
-
-### Backend Setup
-
-1. Navigate to the `backend` directory.
-2. Run the backend server:
-
-```bash
-go run .
+### **Attack Surface Components**
+```mermaid
+graph TD
+    A[Frontend: Next.js 14] -->|gRPC-Web| B[Backend: Go 1.22]
+    B --> C[Auth: Ory Hydra]
+    B --> D[Database: PostgreSQL 16]
+    D --> E[Audit: Triggers]
+    B --> F[Sandbox: gVisor]
