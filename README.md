@@ -1,39 +1,35 @@
-# 🔐 CyberRange Vulnerability Lab  
-**A production-grade web application security sandbox with intentionally implemented and mitigated OWASP Top 10 vulnerabilities**
+# CyberRange Vulnerability 
 
-![Lab Architecture](https://img.shields.io/badge/Architecture-Microservices-9cf?logo=kubernetes&logoColor=white)
-![Auth](https://img.shields.io/badge/Auth-JWT_%2B_Sessions-red?logo=openidconnect)
-![Vulns](https://img.shields.io/badge/Vulnerabilities-10_Controlled_Exploits-orange?logo=owasp)
+This project is the result of an advanced penetration testing initiative targeting a simulated **CyberRange** environment designed to emulate a real-world, enterprise-grade web application. As a team, we conducted a full-spectrum security audit leveraging both automated tools and manual exploitation techniques to uncover and analyze critical vulnerabilities in the system architecture.
 
-## 🎯 Lab Objectives
-- Demonstrate **real-world exploit chains** using modern web attack vectors  
-- Provide **patched equivalents** of all vulnerabilities for defensive training  
-- Emulate **SDLC security gaps** through intentionally flawed commit history  
+We successfully identified and exploited **10+ high-impact security flaws**, ranging from client-side injection vectors to backend logic abuses and authentication bypasses. Each issue was thoroughly documented, exploited in a controlled environment, and mitigated through a combination of secure coding practices, access control refinements, and architectural hardening. This lab now serves as a fully patched, interactive learning platform for understanding the lifecycle of web application security threats—from reconnaissance and exploitation to remediation.
 
----
+## 🔍 Vulnerabilities Identified & Mitigated
 
-## 🧠 Vulnerability Matrix (CWE Mapped)
+The lab includes real exploit scenarios for the following vulnerabilities:
 
-| Vulnerability Class          | Implementation Method          | Mitigation Strategy                     | CWE Reference |
-|------------------------------|---------------------------------|-----------------------------------------|---------------|
-| **Stored XSS**               | Unsanitized Markdown renderer  | CSP + DOMPurify (v3.0.5)                | CWE-79        |
-| **Broken Access Control**    | Missing RBAC checks in Golang middleware | JWT claims validation + Session binding | CWE-862       |
-| **Path Traversal**           | Unrestricted `filepath.Join()` | Sandboxed filesystem (gVisor)           | CWE-22        |
-| **Weak Credential Policy**   | 6-char minimum password        | zxcvbn (score≥3) + Argon2id KDF         | CWE-521       |
-| **OTP Predictability**       | 4-digit numeric-only tokens    | TOTP (RFC 6238) with 30s validity       | CWE-613       |
-| **Session Hijacking**        | Non-rotating session cookies   | SameSite=Strict + HMAC-signed sessions   | CWE-384       |
-| **Race Condition**           | Unsynchronized score updates   | PostgreSQL SKIP LOCKED                   | CWE-362       |
-| **Business Logic Bypass**    | Client-side validation only    | Semantic checks in gRPC interceptors     | CWE-840       |
+- **Cross-Site Scripting (XSS)**: Persistent and reflected XSS vectors discovered in multiple input fields, leading to session hijacking.
+- **Improper Authorization**: Privilege escalation via flawed access control logic allowed unauthorized user actions on high-privilege accounts.
+- **Directory Traversal**: Arbitrary file read through unsanitized path parameters in download endpoints.
+- **Weak Password Enforcement**: Lack of password complexity and rate-limiting exposed the platform to brute-force attacks.
+- **One-Time Password (OTP) Bypass**: OTPs could be predicted and reused due to static generation logic and insufficient expiration handling.
+- **User Impersonation**: Identity spoofing by manipulating profile attributes through insecure client-server communication.
+- **Race Condition in Submissions**: Inconsistent state handling allowed users to submit labs multiple times, exploiting scoring logic.
+- **Business Logic Flaw**: Vulnerable game challenge system permitted users to exploit negative scoring to manipulate leaderboards.
 
----
+## 🚀 Getting Started
 
-## ⚙️ Technical Stack Deep Dive
+### Prerequisites
 
-### **Attack Surface Components**
-```mermaid
-graph TD
-    A[Frontend: Next.js 14] -->|gRPC-Web| B[Backend: Go 1.22]
-    B --> C[Auth: Ory Hydra]
-    B --> D[Database: PostgreSQL 16]
-    D --> E[Audit: Triggers]
-    B --> F[Sandbox: gVisor]
+Ensure the following dependencies are installed:
+
+- **Go** (version 1.x recommended)
+- **Node.js** and **npm** (or `pnpm`, `yarn`, or `bun` as alternatives)
+
+### Backend Setup
+
+1. Navigate to the `backend` directory.
+2. Run the server with:
+
+```bash
+go run .
